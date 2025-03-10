@@ -62,18 +62,17 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign({ _id: user._id }, secretKey, { expiresIn: "2h" });
 
     //Send response
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Login successful",
-        token,
-        user: { id: user._id, email: user.email, username: user.username },
-      });
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: { id: user._id, email: user.email, username: user.username },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
-export { registerUser, loginUser };
+const getUser = async (req: Request, res: Response): Promise<void> => {};
+export { registerUser, loginUser, getUser };
