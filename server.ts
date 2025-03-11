@@ -6,6 +6,7 @@ import userRouter from "./routes/userRoute";
 import connectDB from "./config/mongodb";
 import cartRouter from "./routes/cartRoute";
 import productRouter from "./routes/productRoute";
+import oderRouter from "./routes/orderRoute";
 
 // Initialize
 dotenv.config();
@@ -38,6 +39,7 @@ app.use(
 app.use("/user", userRouter);
 app.use("/cart", cartRouter);
 app.use("/product", productRouter);
+app.use("/orders", oderRouter);
 
 const port: number = parseInt(process.env.PORT as string, 10) || 4000;
 
