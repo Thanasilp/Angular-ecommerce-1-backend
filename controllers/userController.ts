@@ -75,4 +75,51 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const getUser = async (req: Request, res: Response): Promise<void> => {};
-export { registerUser, loginUser, getUser };
+
+const getUserAddress = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const user = await userModel.findById(userId).select("address");
+
+    if (!user || !user.address) {
+      res.status(404).json({ success: false, message: "No address found" });
+      return;
+    }
+
+    res.status(200).json({ success: true, address: user.address });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching address", error });
+  }
+};
+
+const updateUserAddress = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const { displayedAddress, lat, lng, phone, details } = req.body;
+
+    const updateUser = await userModel.findByIdAndUpdate(
+      userId,
+      { address: { displayedAddress, lat, lng, phone, details } },
+      { new: true }
+    );
+
+    if (!updateUser) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: " Address updated",
+      address: updateUser.address,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating address", error });
+  }
+};
+export { registerUser, loginUser, getUser, getUserAddress, updateUserAddress };
