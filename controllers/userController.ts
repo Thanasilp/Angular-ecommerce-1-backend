@@ -5,8 +5,38 @@ import jwt from "jsonwebtoken";
 
 const registerUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, email, password } = req.body;
+    let { username, email, password } = req.body;
 
+    // Validate required fields
+    if (!username || !email || !password) {
+      res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
+      return;
+    }
+
+    // Convert email to lowercase  to avoid duplicate
+    email = email.toLowerCase();
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res
+        .status(400)
+        .json({ success: false, message: " INvalid Email format" });
+      return;
+    }
+
+    // Check password length
+    if (password.length < 6) {
+      res.status(400).json({
+        success: false,
+        message: "Password must be atleast 6 characters",
+      });
+      return;
+    }
+
+    // Check if user already exists
     const exists = await userModel.findOne({ email });
     if (exists) {
       res.status(409).json({ success: false, message: "User already exists" });
@@ -22,6 +52,7 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
       username,
       email,
       password: hashedPassword,
+      address: null, // Ensure address is explicitly set to null
     });
 
     //wait for saving new user data
@@ -46,7 +77,6 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
 
     //check password and compare password with the existed one
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
       res.status(401).json({ success: false, message: "Invalid credentials" });
       return;
@@ -59,14 +89,20 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
     }
 
     // สร้าง JWT token
-    const token = jwt.sign({ _id: user._id }, secretKey, { expiresIn: "2h" });
+    const token = jwt.sign({ id: user._id.toString() }, secretKey, {
+      expiresIn: "2h",
+    });
 
     //Send response
     res.status(200).json({
       success: true,
       message: "Login successful",
       token,
-      user: { id: user._id, email: user.email, username: user.username },
+      user: {
+        id: user._id.toString(),
+        email: user.email,
+        username: user.username,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -74,7 +110,21 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const getUser = async (req: Request, res: Response): Promise<void> => {};
+const getUserData = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id; // ดึง userId จ่าก middleware
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+
+    res.json({ success: true, address: user.address }); // response ีuser.address เเอาไปใช้ในหน้า address
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 const getUserAddress = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -122,4 +172,10 @@ const updateUserAddress = async (
       .json({ success: false, message: "Error updating address", error });
   }
 };
-export { registerUser, loginUser, getUser, getUserAddress, updateUserAddress };
+export {
+  registerUser,
+  loginUser,
+  getUserData,
+  getUserAddress,
+  updateUserAddress,
+};

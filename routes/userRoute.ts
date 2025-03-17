@@ -1,7 +1,7 @@
 import express from "express";
 import {
-  getUser,
   getUserAddress,
+  getUserData,
   loginUser,
   registerUser,
   updateUserAddress,
@@ -15,8 +15,8 @@ const userRouter = express.Router();
 // userRouter.get("/", getAllUsers);
 userRouter.post("/register", validateRegister, registerUser);
 userRouter.post("/login", validateLogin, loginUser);
-userRouter.put("/", authUser, updateUserAddress);
-userRouter.get("/", getUser);
-userRouter.get("/address", authUser, getUserAddress);
+userRouter.put("/address", authUser, updateUserAddress);
+userRouter.get("/", authUser, getUserData);
+userRouter.get("/address", authUser, getUserAddress); // ใช้เส้นนี้
 
 export default userRouter;
