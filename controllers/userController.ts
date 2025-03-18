@@ -148,13 +148,15 @@ const updateUserAddress = async (
 ): Promise<void> => {
   try {
     const userId = req.user?.id;
-    const { displayedAddress, lat, lng, phone, details } = req.body;
+    const { name, address, lat, lng, phone, details } = req.body;
 
     const updateUser = await userModel.findByIdAndUpdate(
       userId,
-      { address: { displayedAddress, lat, lng, phone, details } },
+      { address: { name, address, lat, lng, phone, details } },
       { new: true }
     );
+
+    // console.log("This is updatedUser from user controller", updateUser);
 
     if (!updateUser) {
       res.status(404).json({ success: false, message: "User not found" });

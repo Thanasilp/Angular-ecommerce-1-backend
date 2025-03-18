@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const addressSchema = new mongoose.Schema({
   name: { type: String, default: "" },
-  displayedAddress: { type: String, required: true }, // ที่อยู่แบบ text
+  address: { type: String, required: true }, // ที่อยู่แบบ text
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
   phone: { type: String, default: "", required: true },
