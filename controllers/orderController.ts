@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import orderModel from "../models/orderModel";
 import userModel from "../models/userModel";
+import cartModel from "../models/cartModel";
 
 const createOrder = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -10,6 +11,13 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
     if (!userId || !items || items.length === 0) {
       res.status(400).json({ success: false, message: "Order not found" });
       return;
+    }
+
+    // ดึงข้อมูล cart ของลูกค้า
+    const userCart = await cartModel.findOne({ userId });
+
+    if (!userCart || userCart.items.length === 0) {
+      res.status(400).json({ success: false, message: "No cart found" });
     }
 
     // create a new order
@@ -23,10 +31,7 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
 
     const savedOrder = await newOrder.save();
 
-    // update user data and save order
-    await userModel.findByIdAndUpdate(userId, {
-      $push: { orders: savedOrder._id },
-    });
+    await cartModel.findOneAndDelete({ userId });
 
     res
       .status(201)
@@ -79,30 +84,7 @@ const updateOrderStatus = async (
   }
 };
 
-const updateUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const userId = req.params.userId;
-    const { address, phone, details } = req.body;
+// function name(params:type) {
 
-    const updatedUser = await userModel.findByIdAndUpdate(
-      userId,
-      { address, phone, details },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      res.status(404).json({ success: false, message: "user not found" });
-      return;
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "User profile updated successfully",
-      user: updatedUser,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Internal server error" });
-  }
-};
-export { createOrder, getUserOrders, updateOrderStatus, updateUser };
+// }
+export { createOrder, getUserOrders, updateOrderStatus };
