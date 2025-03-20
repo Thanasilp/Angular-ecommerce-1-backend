@@ -1,5 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { Request, Response } from "express";
 import Stripe from "stripe";
+
+console.log(process.env.STRIPE_SECRET_KEY);
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 const CreatePaymentIntent = async (
@@ -26,7 +32,7 @@ const CreatePaymentIntent = async (
       cancel_url: "http://localhost:5173/cancel",
     });
 
-    res.json({ sessionId: session.id });
+    res.json({ sessionId: session.id, sessionUrl: session.url });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to create Stripe session" });
