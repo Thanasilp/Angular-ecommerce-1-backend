@@ -35,7 +35,7 @@ app.use(
     // },
     origin: "*", // เปิดทั้งหมดเพื่อให้ flutter ใช้งานได้
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, // Allow cookies or Authorization headers
+    credentials: false, // Allow cookies or Authorization headers
   })
 );
 app.use("/user", userRouter);
