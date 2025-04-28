@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import orderModel from "../models/orderModel";
-import userModel from "../models/userModel";
 import cartModel from "../models/cartModel";
 
 const createOrder = async (req: Request, res: Response): Promise<void> => {
@@ -35,7 +34,7 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
 
     res
       .status(201)
-      .json({ sucess: true, message: "Order created", savedOrder });
+      .json({ success: true, message: "Order created", savedOrder });
   } catch (error) {
     res
       .status(500)

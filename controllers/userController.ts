@@ -90,9 +90,11 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
 
     // สร้าง JWT token
     const token = jwt.sign({ id: user._id.toString() }, secretKey, {
-      expiresIn: "2h",
+      expiresIn: "2h", 
     });
 
+    
+    
     //Send response
     res.status(200).json({
       success: true,

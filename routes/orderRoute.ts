@@ -8,7 +8,7 @@ import authUser from "../middlewares/userAuth";
 const oderRouter = express.Router();
 
 oderRouter.post("/", authUser, createOrder);
-oderRouter.get("/:userId", authUser, getUserOrders);
+oderRouter.get("/", authUser, getUserOrders);
 oderRouter.put("/", updateOrderStatus);
 
 export default oderRouter;
