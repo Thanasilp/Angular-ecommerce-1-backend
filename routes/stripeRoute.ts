@@ -4,6 +4,6 @@ import authUser from "../middlewares/userAuth";
 
 const stripeRouter = express.Router();
 
-stripeRouter.post("/create-payment-intent",authUser, CreatePaymentIntent);
+stripeRouter.post("/create-payment-intent", CreatePaymentIntent);
 stripeRouter.post("/create-payment-intent-mobile", authUser, CreatePaymentIntentForMobile);
 export default stripeRouter;
