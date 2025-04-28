@@ -20,22 +20,22 @@ const allowedOrigins = ["http://localhost:4200"];
 
 // Configure CORS
 app.use(
-  // cors({
-  //   origin: (
-  //     origin: string | undefined,
-  //     callback: (err: Error | null, allow?: boolean) => void
-  //   ) => {
-  //     // Allow requests with no origin (e.g., mobile apps or curl)
-  //     if (!origin) return callback(null, true);
-  //     if (allowedOrigins.includes(origin)) {
-  //       callback(null, true); // Allow the origin
-  //     } else {
-  //       callback(new Error("Not allowed by CORS")); // Block the origin
-  //     }
-  //   },
-  //   methods: ["GET", "POST", "PUT", "DELETE"],
-  //   credentials: true, // Allow cookies or Authorization headers
-  // })
+  cors({
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void
+    ) => {
+      // Allow requests with no origin (e.g., mobile apps or curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true); // Allow the origin
+      } else {
+        callback(new Error("Not allowed by CORS")); // Block the origin
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // Allow cookies or Authorization headers
+  })
 );
 app.use("/user", userRouter);
 app.use("/cart", cartRouter);
